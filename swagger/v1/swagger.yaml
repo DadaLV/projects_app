@@ -3,4 +3,83 @@ openapi: 3.0.1
 info:
   title: API V1
   version: v1
+paths:
+  /api/v1/sign_up:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Endpoint to allow users to sign up with email and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                      example: test3@test.com
+                    password:
+                      type: string
+                      example: password
+              required:
+                - user
+      responses:
+        '200':
+          description: User registered successfully
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+  /api/v1/sign_in:
+    post:
+      tags:
+        - Authentication
+      summary: Signs in a user
+      description: Use this endpoint to authenticate a user.
+      operationId: signInUser
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            example: test1@test.com
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+            example: password
+      responses:
+        "200":
+          description: successful
+        "401":
+          description: unauthorized
+  /api/v1/sign_out:
+    delete:
+      tags:
+        - Authentication
+      summary: Sign out a user
+      description: Endpoint to allow users to sign out by providing their authentication token in the Authorization header.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User signed out successfully
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '500':
+          description: Internal Server Error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
   
