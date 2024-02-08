@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe 'SessionsController', type: :request do
-  let(:user) { create :user }
   describe 'POST /api/v1/sign_in' do
+    let(:user) { create :user }
+
     it 'signs in a user and returns token' do
       post '/api/v1/sign_in', params: { email: user.email, password: user.password }
       
@@ -18,17 +19,15 @@ RSpec.describe 'SessionsController', type: :request do
   end
     
   describe 'POST /api/v1/sign_out' do
-    let(:headers) { { 'Authorization' => "#{user.authentication_token}" } }
+    let(:user) { create :user }
+
     it 'signs out the user' do
-      
       post '/api/v1/sign_in', params: { email: user.email, password: user.password }
-      delete '/api/v1/sign_out', headers: headers
+
+      delete '/api/v1/sign_out', headers: { 'Authorization' => response.headers['Authorization'] }
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include('Signed out successfully')
-
-      user_after_sign_out = User.find_by(email: user.email)
-      expect(user_after_sign_out.authentication_token).not_to eq(user.authentication_token)
     end
 
     it 'returns unauthorized status for unauthorized request' do

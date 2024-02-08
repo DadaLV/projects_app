@@ -7,6 +7,9 @@ Rails.application.routes.draw do
         post "sign_in", to: "sessions#create"
         delete "sign_out", to: "sessions#destroy"
       end
+      resources :projects, only: [:index, :show, :create, :update, :destroy] do
+        resources :tasks, only: [:index, :show, :create, :update, :destroy]
+      end
     end
   end
   mount Rswag::Ui::Engine => '/api-docs'
