@@ -76,6 +76,328 @@ paths:
           description: Unauthorized - Missing or invalid token
         '500':
           description: Internal Server Error
+  /api/v1/projects:
+    get:
+      summary: Retrieves all projects
+      tags:
+        - Projects
+      security:
+        - bearerAuth: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Project'
+    post:
+      summary: Creates a new project
+      tags:
+        - Projects
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      format: string
+                      example: some project
+                    description:
+                      type: string
+                      example: some description
+                    user_id:
+                      type: integer
+                      example: 1
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Project created successfully
+          schema:
+            $ref: '#/definitions/Project'
+        '422':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+  /api/v1/projects/{id}:
+    get:
+      summary: Retrieves a project by ID
+      tags:
+        - Projects
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID of the project to retrieve
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Project'
+    put:
+      summary: Updates a project by ID
+      tags:
+        - Projects
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID of the project to update
+          required: true
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      format: string
+                      example: some project
+                    description:
+                      type: string
+                      example: some description
+                    user_id:
+                      type: integer
+                      example: 1
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Project updated successfully
+          schema:
+            $ref: '#/definitions/Project'
+    delete:
+      summary: Deletes a project by ID
+      tags:
+        - Projects
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID of the project to delete
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Project deleted successfully
+  /api/v1/projects/{project_id}/tasks:
+    get:
+      summary: Retrieves all tasks associated with a project
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: project_id
+          in: path
+          description: ID of the project
+          required: true
+          type: integer
+        - name: status
+          in: query
+          description: Filter tasks by status
+          required: false
+          schema:
+            type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Task'
+    post:
+      summary: Creates a new task associated with a project
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      format: string
+                      example: some task
+                    description:
+                      type: string
+                      example: some description
+                    status:
+                      type: string
+                      example: new
+      parameters:
+        - name: project_id
+          in: path
+          description: ID of the project
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Task created successfully
+          schema:
+            $ref: '#/definitions/Task'
+        '422':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+  /api/v1/projects/{project_id}/tasks/{id}:
+    get:
+      summary: Retrieves a task by ID associated with a project
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: project_id
+          in: path
+          description: ID of the project
+          required: true
+          type: integer
+        - name: id
+          in: path
+          description: ID of the task
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Task'
+    put:
+      summary: Updates a task by ID associated with a project
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      format: string
+                      example: some task
+                    description:
+                      type: string
+                      example: some description
+                    status:
+                      type: string
+                      example: new
+      parameters:
+        - name: project_id
+          in: path
+          description: ID of the project
+          required: true
+          type: integer
+        - name: id
+          in: path
+          description: ID of the task
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Task updated successfully
+          schema:
+            $ref: '#/definitions/Task'
+    delete:
+      summary: Deletes a task by ID associated with a project
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: project_id
+          in: path
+          description: ID of the project
+          required: true
+          type: integer
+        - name: id
+          in: path
+          description: ID of the task
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Task deleted successfully
+definitions:
+  Project:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      description:
+        type: string
+  NewProject:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      user_id:
+        type: integer
+  UpdatedProject:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+  ValidationError:
+    type: object
+    properties:
+      message:
+        type: string
 
 components:
   securitySchemes:
